@@ -50,15 +50,13 @@ METRICS = [
 ]
 
 
-# ------------------------------------------------------------------------------
-#
-# Internal tests
-#
 def _load_model():
     """Generic test to load a model"""
     assert os.path.exists(MODEL_FILENAME)
+
     with gzip.open(MODEL_FILENAME, "rb") as file:
         model = pickle.load(file)
+
     assert model is not None
     return model
 
@@ -66,13 +64,16 @@ def _load_model():
 def _test_components(model):
     """Test components"""
     assert "GridSearchCV" in str(type(model))
+
     current_components = [str(model.estimator[i]) for i in range(len(model.estimator))]
+
     for component in MODEL_COMPONENTS:
         assert any(component in x for x in current_components)
 
 
 def _load_grading_data():
     """Load grading data"""
+
     with open("files/grading/x_train.pkl", "rb") as file:
         x_train = pickle.load(file)
 
@@ -90,6 +91,7 @@ def _load_grading_data():
 
 def _test_scores(model, x_train, y_train, x_test, y_test):
     """Test scores"""
+
     assert model.score(x_train, y_train) > SCORES[0]
     assert model.score(x_test, y_test) > SCORES[1]
 
@@ -97,9 +99,11 @@ def _test_scores(model, x_train, y_train, x_test, y_test):
 def _load_metrics():
     assert os.path.exists("files/output/metrics.json")
     metrics = []
+
     with open("files/output/metrics.json", "r", encoding="utf-8") as file:
         for line in file:
             metrics.append(json.loads(line))
+            
     return metrics
 
 
